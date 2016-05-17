@@ -1,0 +1,21 @@
+#!/bin/sh
+cd /opt/mtd-utils
+#./flash_eraseall /dev/mtd2
+./ubiattach /dev/ubi_ctrl -m 3
+./ubimkvol /dev/ubi0 -N rootfs -s 200MiB
+mkdir -p /tmp/nand
+mkdir -p /tmp/sd
+mount -t ubifs ubi0_0 /tmp/nand
+mount /dev/mmcblk0p1 /tmp/sd
+echo "extracting   files ................."
+tar xvjf /mnt/sd/rootfs.tar.bz2  -C /tmp/nand
+sync
+mv   -f  /tmp/nand/rootfs/*  /tmp/nand/
+rm   -rf /tmp/nand/rootfs
+umount  /tmp/nand
+umount /mnt/sd
+echo "setup done!!"
+echo "unplug the jumper , and reboot!"
+
+
+
